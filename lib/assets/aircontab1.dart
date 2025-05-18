@@ -1,28 +1,32 @@
 import 'package:flutter/material.dart';
 
-
-class airconTab1 extends StatelessWidget {
-  const airconTab1({Key? key}) : super(key: key);
+class AirconTab1 extends StatelessWidget {
+  const AirconTab1({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: Colors.white,
-      body: Column( 
-       children: [ 
-	airconMode()
-        ],
-       )
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AirconMode(),
+          ],
+        ),
+      ),
     );
   }
 }
 
-class airconMode extends StatefulWidget {
+class AirconMode extends StatefulWidget {
+  const AirconMode({Key? key}) : super(key: key); 
+
   @override
-  _airconMode createState() => _airconMode();
+  _AirconModeState createState() => _AirconModeState();
 }
 
-class _airconMode extends State<airconMode> {
+class _AirconModeState extends State<AirconMode> {
   int _selectedIndex = 0;
   final List<String> _options = ['One', 'Two', 'Three', 'Four'];
 
@@ -31,9 +35,8 @@ class _airconMode extends State<airconMode> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-      	ToggleButtons(
+          ToggleButtons(
             borderColor: Colors.deepPurple,
             selectedBorderColor: Colors.cyan,
             borderWidth: 1,
@@ -41,19 +44,25 @@ class _airconMode extends State<airconMode> {
             color: Colors.cyan,
             fillColor: Colors.cyan.shade100,
             borderRadius: BorderRadius.circular(20),
-            children: _options.map((String label) => Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text(label),
-            )).toList(),
+            children: _options
+                .map((label) => Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Text(label),
+                    ))
+                .toList(),
             onPressed: (int index) {
               setState(() {
                 _selectedIndex = index;
               });
             },
-            isSelected: List.generate(_options.length, (index) => index == _selectedIndex),
-          )
+            isSelected: List.generate(
+              _options.length,
+              (index) => index == _selectedIndex,
+            ),
+          ),
         ],
       ),
     );
   }
 }
+
