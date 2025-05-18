@@ -31,53 +31,49 @@ Widget build(BuildContext context) {
   return Scaffold(
     backgroundColor: Colors.white,
     appBar: AppBar(
-      title: Text('Air Conditioner'),
+      title: const Text('Air Conditioner'),
     ),
-    body: SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: [
-              SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.cyan,
+    body: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.cyan,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: TabBar(
+                controller: tabController,
+                unselectedLabelColor: Colors.white,
+                labelColor: Colors.black,
+                indicatorSize: TabBarIndicatorSize.tab,
+                dividerColor: Colors.transparent,
+                indicator: BoxDecoration(
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: Padding(
-                  padding: EdgeInsets.all(5),
-                  child: TabBar(
-                    controller: tabController,
-                    unselectedLabelColor: Colors.white,
-                    labelColor: Colors.black,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    dividerColor: Colors.transparent,
-                    indicator: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    tabs: const [
-                      Tab(text: 'Tab 1'),
-                      Tab(text: 'Tab 2'),
-                    ],
-                  ),
-                ),
+                tabs: const [
+                  Tab(text: 'Tab 1'),
+                  Tab(text: 'Tab 2'),
+                ],
               ),
-              Expanded(
-                child: TabBarView(
-                  controller: tabController,
-                  children: [
-                    airconTab1(),
-                    airconTab2(),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+          Expanded(
+            child: TabBarView(
+              controller: tabController,
+              children: [
+                airconTab1(),
+                airconTab2(),
+              ],
+            ),
+          ),
+        ],
       ),
     ),
   );
-}}
+ }
+} 

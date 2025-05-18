@@ -22,22 +22,31 @@ class NavigationMenu extends StatelessWidget {
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
-	    
           ),
-          child: NavigationBar(
-	    backgroundColor: Colors.white,
-            height: 80,
-            elevation: 3,
-	    shadowColor: Colors.black12,
-            selectedIndex: controller.selectedIndex.value,
-            onDestinationSelected: (index) =>
-                controller.selectedIndex.value = index,
-            destinations: const [
-                NavigationDestination(icon: Icon(Icons.home), label: 'Home'),  // dashboard
-                NavigationDestination(icon: Icon(Icons.ac_unit), label: 'AirCon'),
-                NavigationDestination(icon: Icon(Icons.light_mode), label: 'Light'),
-                NavigationDestination(icon: Icon(Icons.settings), label: 'Settings'),
-            ],
+          child: Container(
+	   decoration: const BoxDecoration( 
+	      border: Border( 
+	        top: BorderSide( 
+		 color: Colors.black12,
+		 width: 1.0,
+		),
+	      ),
+	     ),
+            child: NavigationBar(
+              backgroundColor: Colors.white,
+              height: 80,
+              elevation: 3,
+            	    shadowColor: Colors.black12,
+              selectedIndex: controller.selectedIndex.value,
+              onDestinationSelected: (index) =>
+                  controller.selectedIndex.value = index,
+              destinations: const [
+                  NavigationDestination(icon: Icon(Icons.home), label: 'Home'),  // dashboard
+                  NavigationDestination(icon: Icon(Icons.ac_unit), label: 'AirCon'),
+                  NavigationDestination(icon: Icon(Icons.light_mode), label: 'Light'),
+                  NavigationDestination(icon: Icon(Icons.settings), label: 'Settings'),
+              ],
+            ),
           ),
         ),
       ),
