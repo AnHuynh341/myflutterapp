@@ -64,6 +64,7 @@ Widget build(BuildContext context) {
           ),
           Expanded(
             child: TabBarView(
+	      physics: NeverScrollableScrollPhysics(),
               controller: tabController,
               children: [
                 AirconTab1(),
