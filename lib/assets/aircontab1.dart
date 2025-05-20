@@ -6,6 +6,8 @@ import 'package:smart_control/assets/utils.dart';
 class AirconTab1 extends StatelessWidget {
   const AirconTab1({Key? key}) : super(key: key);
 
+    final String deviceId = 'ac1';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,16 +15,25 @@ class AirconTab1 extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.max,
-          children: [
-	    SizedBox(height: 20),
-	    Center(child: Text('Temperature') ),
-	    SizedBox(height: 20),
-	    SliderWidget(),
-	    SizedBox(height: 10),
-	    AirconSwitch(),
-	    SizedBox(height: 10),
-            AirconMode(),
-          ],
+            children: [
+              const SizedBox(height: 10),
+              const Center(
+                 child: Text('Set Temperature',
+                   style: TextStyle(
+                     fontSize: 24, 
+                     fontWeight: FontWeight.bold,
+                     letterSpacing: 1.2, 
+                     color: Colors.black87, 
+                   ),
+                 ),
+              ),              
+              const SizedBox(height: 10),
+              SliderWidget(deviceId: deviceId),
+              const SizedBox(height: 5),
+              AirconSwitch(deviceId: deviceId),
+              const SizedBox(height: 10),
+              AirconMode(deviceId: deviceId),
+          ],        
         ),
       ),
     );
@@ -34,14 +45,22 @@ class AirconTab1 extends StatelessWidget {
 
 
 class AirconSwitch extends StatefulWidget {
-  const AirconSwitch({super.key});
+   final String deviceId;
+  const AirconSwitch({Key? key, required this.deviceId}) : super(key: key);
 
   @override
   State<AirconSwitch> createState() => _AirconSwitchState();
 }
 
 class _AirconSwitchState extends State<AirconSwitch> {
-  final Device device = DeviceManager().devices[0]; // Only 1 aircon in this tab
+  late Device device;
+
+  
+  @override
+  void initState() {
+    super.initState();
+    device = DeviceManager().getDeviceById(widget.deviceId);
+  }
 
   void _toggleDevice() {
     setState(() {
@@ -61,12 +80,11 @@ class _AirconSwitchState extends State<AirconSwitch> {
            Expanded(
               child: Card(
                 shape: RoundedRectangleBorder( 
-                    borderRadius: BorderRadius.circular(90),
-		     side: BorderSide( 
-		     color: device.isOn ? Colors.purple : Colors.grey,
-		     width: 1,
-		     ),
-		),
+                  borderRadius: BorderRadius.circular(90),
+                  side: BorderSide( 
+                    color: device.isOn ? Colors.purple : Colors.grey, width: 1,
+                  ),
+                ),
                 color: Colors.lightBlue.shade100,
                 child: Padding(
                   padding: const EdgeInsets.all(14.0),
@@ -80,7 +98,7 @@ class _AirconSwitchState extends State<AirconSwitch> {
                   ),
                 ),
               ),
-            ),
+           ),
             const SizedBox(width: 5),
 
             Expanded(
@@ -90,11 +108,8 @@ class _AirconSwitchState extends State<AirconSwitch> {
                 child: Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(90),
-		      side: BorderSide( 
-		        color: device.isOn ? Colors.purple : Colors.grey,
-			width: 1,
-		       ),
-		  ),
+                      side: BorderSide(color: device.isOn ? Colors.purple : Colors.grey, width: 1),
+                  ),
                   color: device.isOn
                       ? Colors.lightBlue.shade100
                       : Colors.grey.shade300,
@@ -105,13 +120,13 @@ class _AirconSwitchState extends State<AirconSwitch> {
                             device.icon,
                             size: 42,
                             color: device.isOn ? Colors.blue : Colors.grey,
-                          ),
+                        ),
                     ),
                   ),
                 ),
               ),
             ),
-          ],
+           ],
         ),
       ),
     );
@@ -125,20 +140,30 @@ class _AirconSwitchState extends State<AirconSwitch> {
 
 
 class AirconMode extends StatefulWidget {
-  const AirconMode({Key? key}) : super(key: key); 
+   final String deviceId;
+  const AirconMode({Key? key, required this.deviceId}) : super(key: key);
 
   @override
   _AirconModeState createState() => _AirconModeState();
 }
 
 class _AirconModeState extends State<AirconMode> {
-  int _selectedIndex = 0;
+   late int _selectedIndex;
+   late Device device;
+
   final List<IconData> _options = [
-    Icons.ac_unit, 
+    Icons.ac_unit,
     Icons.water_drop,
     Icons.air,
     Icons.energy_savings_leaf,
-    ];
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    device = DeviceManager().getDeviceById(widget.deviceId);
+    _selectedIndex = device.modeIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,47 +171,59 @@ class _AirconModeState extends State<AirconMode> {
       padding: const EdgeInsets.all(5.0),
       child: Column(
         children: [
-           ToggleButtons(
-              borderColor: Colors.deepPurple,
-              selectedBorderColor: Colors.cyan,
-              borderWidth: 1,
-              selectedColor: Colors.white,
-              color: Colors.cyan,
-              fillColor: Colors.cyan.shade100,
-              borderRadius: BorderRadius.circular(90),
-              children: _options
-                  .map((IconData) => Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 8),
-                          child: Icon(IconData),
-                        ),
-                  )
-                  .toList(),
-              onPressed: (int index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-              isSelected: List.generate(
-                _options.length,
-                (index) => index == _selectedIndex,
-              ),
+          ToggleButtons(
+            borderColor: Colors.deepPurple,
+            selectedBorderColor: Colors.cyan,
+            borderWidth: 1,
+            selectedColor: Colors.white,
+            color: Colors.cyan,
+            fillColor: Colors.cyan.shade100,
+            borderRadius: BorderRadius.circular(90),
+            children: _options
+                .map((iconData) => Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+                      child: Icon(iconData),
+                    ))
+                .toList(),
+            onPressed: (int index) {
+              setState(() {
+                _selectedIndex = index;
+                device.modeIndex = index; 
+              });
+            },
+            isSelected: List.generate(
+              _options.length,
+              (index) => index == _selectedIndex,
             ),
+          ),
         ],
       ),
     );
   }
 }
 
-
 ///////////////////////////////////////////////////////////////////////////
 
 class SliderWidget extends StatefulWidget {
+   final String deviceId;
+  const SliderWidget({Key? key, required this.deviceId}) : super(key: key);
+
+
   @override
   _SliderWidgetState createState() => _SliderWidgetState();
 }
 
 class _SliderWidgetState extends State<SliderWidget> {
-  double progressVal = 0.5;
+  late double progressVal;
+   late Device device;
+
+  @override
+  void initState() {
+    super.initState();
+    device = DeviceManager().getDeviceById(widget.deviceId);
+    progressVal = normalize(device.temperature, kMinDegree, kMaxDegree).toDouble();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -209,75 +246,77 @@ class _SliderWidgetState extends State<SliderWidget> {
             child: Container(
               width: kDiameter,
               height: kDiameter,
-	      decoration: BoxDecoration(color: Colors.white),
+              decoration: BoxDecoration(color: Colors.white),
               child: Stack(
                 children: [
-		  Padding(
-                   padding: const EdgeInsets.all(65.0),
-                   child: Container(  
-                   decoration: BoxDecoration( 
-                     color: Colors.white,
-                     shape: BoxShape.circle,
-                     border: Border.all(
-                       color: Colors.lightBlue,width: 2,
-                       style: BorderStyle.solid,
-                     ),
-                     boxShadow: [  
-                        BoxShadow(
-                            blurRadius: 30,
-                            spreadRadius: 10,
-                            color: Colors.blue.withAlpha(
-                                normalize(progressVal * 20000, 100, 255).toInt()),
-                            offset: Offset(1, 3),
-                		      ),
-                		    ],
-                		 ),
-                	),
-			),
-                   Center(
-                     child: SleekCircularSlider(
-                                       min: kMinDegree,
-                                       max: kMaxDegree,
-                                       initialValue: 22,
-                                       appearance: CircularSliderAppearance(
-                      startAngle: 180,
-                      angleRange: 180,
-                      size: kDiameter -50,
-                      customWidths: CustomSliderWidths(
-                        trackWidth: 10,
-                        shadowWidth: 1,
-                        progressBarWidth: 03,
-                        handlerSize: 12,
-                      ),
-                      customColors: CustomSliderColors(
-                        hideShadow: true,
-                        progressBarColor: Colors.blue,
-                        trackColor: Colors.transparent,
-                        dotColor: Colors.blue,
-                      ),
-                                       ),
-                                       onChange: (value) {
-                      setState(() {
-                        progressVal = normalize(value, kMinDegree, kMaxDegree).toDouble();
-                      });
-                                       },
-                                       innerWidget: (percentage) {
-                      return Center(
-                        child: Text(
-                          '${percentage?.toInt()}°c',
-                          style: TextStyle(
-                            fontSize: 40,
-                          ),
+                  Padding(
+                    padding: const EdgeInsets.all(70.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.lightBlue,
+                          width: 2,
+                          style: BorderStyle.solid,
                         ),
-                      );
-                                       },
-                                     ),
-                   ),
-		],
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 40,
+                            spreadRadius: 45,
+                            color: Colors.blue.withAlpha(
+                              normalize(progressVal * 20000, 100, 255).toInt(),
+                            ),
+                            offset: Offset(1, 3),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: SleekCircularSlider(
+                      min: kMinDegree,
+                      max: kMaxDegree,
+                      initialValue: device.temperature,
+                      appearance: CircularSliderAppearance(
+                        startAngle: 150,
+                        angleRange: 240,
+                        size: kDiameter - 55,
+                        customWidths: CustomSliderWidths(
+                          trackWidth: 5,
+                          shadowWidth: 1,
+                          progressBarWidth: 10,
+                          handlerSize: 12,
+                        ),
+                        customColors: CustomSliderColors(
+                          hideShadow: true,
+                          progressBarColor: Colors.blue,
+                          trackColor: Colors.grey.shade300,
+                          dotColor: Colors.purple,
+                        ),
+                      ),
+                      onChange: (value) {
+                        setState(() {
+                          device.temperature = value; 
+                          progressVal = normalize(value, kMinDegree, kMaxDegree).toDouble();
+                        });
+                      },
+                      innerWidget: (percentage) {
+                        return Center(
+                          child: Text(
+                            '${percentage?.toInt()}°c',
+                            style: TextStyle(
+                              fontSize: 35,
                             ),
                           ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-
+            ),
+          ),
         ],
       ),
     );

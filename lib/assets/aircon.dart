@@ -68,7 +68,7 @@ Widget build(BuildContext context) {
               controller: tabController,
               children: [
                 AirconTab1(),
-                airconTab2(),
+                AirconTab2(),
               ],
             ),
           ),

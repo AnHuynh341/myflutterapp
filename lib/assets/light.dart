@@ -63,10 +63,11 @@ Widget build(BuildContext context) {
           ),
           Expanded(
             child: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
               controller: tabController,
               children: [
-                lightTab1(),
-                lightTab2(),
+                LightTab1(),
+                LightTab2(),
               ],
             ),
           ),
